@@ -1,8 +1,11 @@
 //                                    ionic dependency
 var App = angular.module('ScuiApp', ['ionic']);
 
+const server = 'https://localhost';
+
 App.run(function($rootScope, $http) {
-	$http.get("http://localhost/archive/documents").success(
+	//$http.get("http://localhost/archive/documents").success(
+    $http.get(`${server}/artifacts`).success(
 			function(response) {
 				$rootScope.metadataList = response;
 			});
@@ -28,26 +31,22 @@ App.directive('fileModel', [ '$parse', function($parse) {
 App.service('ArchiveListServ', [ '$http', '$rootScope', ArchiveListServiceFunc]);
 
 //                                  inject in service
-App.service('fileUploadServ', ['$http','ArchiveListServ', fileUpLoadServiceFunc]);
+App.service('fileOperationServ', ['$http','ArchiveListServ', fileOperationServiceFunc]);
 
 //                                  inject in controller
-App.controller('ListCtrl', [ '$scope', 'fileUploadServ', ListCtrlFunc]);
+App.controller('ListCtrl', [ '$scope', 'fileOperationServ', ListCtrlFunc]);
 
 function ArchiveListServiceFunc($http, $rootScope) {
-	this.search = function(name, date) {
-		$http.get("http://localhost/archive/documents", {
-			params : {
-				person : name,
-				date : date
-			}
-		}).success(function(response) {
-			$rootScope.metadataList = response;
-		}).error(function() {
+	this.search = function() {
+		$http.get(`${server}/artifacts`).success(
+            function(response) {
+			    $rootScope.metadataList = response;
+		    }).error(function() {
 		});
 	}
 }
 
-function fileUpLoadServiceFunc($http, ArchiveListServ) {
+function fileOperationServiceFunc($http, ArchiveListServ) {
 	this.uploadFileToUrl = function(uploadUrl, file, name, date) {
 		var fd = new FormData();
 		fd.append('file', file);
@@ -63,38 +62,54 @@ function fileUpLoadServiceFunc($http, ArchiveListServ) {
 		}).error(function() {
 		});
 	}
+
+    this.deleteFileByName = function(name) {
+        $http.get(`${server}/artifactD/${name}`).success(function() {
+			ArchiveListServ.search();
+		}).error(function() {
+		});
+//        $http({
+//              method: "DELETE",
+//              url: "https://localhost/artifact/" + name,
+//              headers: { 'Method':'DELETE','Accept': 'application/json, text/plain'},
+//              data: null
+//        }).success(function() {
+//			ArchiveListServ.search();
+//		}).error(function() {
+//            alert("error");
+//		}
+//        );
+
+    }
+
 }
 
-function ListCtrlFunc($scope, fileUploadServ) {
+function ListCtrlFunc($scope, fileOperationServ) {
     $scope.uploadFile = function() {
         var file = $scope.myFile;
         var name = "name";
         var date = "2016-03-04";
         console.log('file is ' + JSON.stringify(file));
-        var uploadUrl = "http://localhost/archive/upload";
-        fileUploadServ.uploadFileToUrl(uploadUrl, file, name, date);
+        var uploadUrl = `${server}/archive/upload`;
+        fileOperationServ.uploadFileToUrl(uploadUrl, file, name, date);
     };
 
-    $scope.moredata = false;
-    $scope.loadMoreData=function()
-    {
-        $scope.metadataList.push({id: $scope.metadataList.length});
-        if($scope.metadataList.length==100)
-        {
-            $scope.moredata=true;
-        }
-      $scope.$broadcast('scroll.infiniteScrollComplete');
+    $scope.deleteFile = function(index) {
+        fileOperationServ.deleteFileByName($scope.metadataList[index].name);
     };
+
+//    $scope.moredata = false;
+//    $scope.loadMoreData=function()
+//    {
+//        $scope.metadataList.push({id: $scope.metadataList.length});
+//        if($scope.metadataList.length==100)
+//        {
+//            $scope.moredata=true;
+//        }
+//      $scope.$broadcast('scroll.infiniteScrollComplete');
+//    };
 //    $scope.metadataList=[];
 }
 
 
-
-
-//App.controller("ListCtrl", ["$scope", "$log", ListCtrlFunc]);
-//function ListCtrlFunc($scope, $log) {
-//    $scope.refresh = function() {
-//        alert("Button pressed");
-//    };
-//}
 

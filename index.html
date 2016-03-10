@@ -41,9 +41,9 @@
                     <ion-list>
                        <ion-item><span>/</span></ion-item>
                         <ion-item  ng-repeat="metadata in metadataList" class="item-icon-right">
-                            <a href="http://localhost/archive/document/{{metadata.uuid}}">{{metadata.fileName}}</a>
+                            <a href="https://localhost/artifact/{{metadata.name}}">{{metadata.name}}</a>
                             <i class="icon ion-chevron-right icon-accessory">
-                                <button class="button">Delete</button>
+                                <button class="button" data-ng-click="deleteFile($index)">Delete</button>
                                 <button class="button">Update</button>
                             </i>
                         </ion-item>
