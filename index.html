@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-ng-app="ScuiApp">
+<html lang="en" ng-app="ScuiApp">
     <head>
         <meta charset="UTF-8">
         <title>Shared Collections UI</title>
@@ -29,24 +29,36 @@
                         </button>
                     </div>
                    <div id="addFile">
-                        <button class="button" data-ng-click="uploadFile()">
+                        <button class="button" ng-click="uploadFile()">
                            <i class="icon ion-plus-round"></i>
                             <i class="icon ion-ios-paper-outline"></i>
                         </button>
-                        <input type="file" class="custom-file-input" file-model="myFile" >
+                        <input type="file" class="custom-file-input" file-model="myFile">
                     </div>
                 </div>
 
                 <div id="fileList">
                     <ion-list>
-                       <ion-item><span>/</span></ion-item>
+                       <ion-item class="item-icon-right">
+                           <a href="https://localhost/collection/{{currentCollection.keys}}">{{currentCollection.names}}</a>
+                       </ion-item>
+                        <ion-item  ng-repeat="metadata in metadataList" class="item-icon-right">
+                            <button class="button" ng-click="goToCollection($index)">{{metadata.name}}/</button>
+                            <i class="icon ion-chevron-right icon-accessory">
+                                <button class="button" ng-click="deleteFile($index)">Delete</button>
+                                <button class="button" ng-click="updateFile($index)">Update</button>
+                            </i>
+                        </ion-item>
+<!--
+                       <ion-item><span>/root</span></ion-item>
                         <ion-item  ng-repeat="metadata in metadataList" class="item-icon-right">
                             <a href="https://localhost/artifact/{{metadata.name}}">{{metadata.name}}</a>
                             <i class="icon ion-chevron-right icon-accessory">
-                                <button class="button" data-ng-click="deleteFile($index)">Delete</button>
-                                <button class="button">Update</button>
+                                <button class="button" ng-click="deleteFile($index)">Delete</button>
+                                <button class="button" ng-click="updateFile($index)">Update</button>
                             </i>
                         </ion-item>
+-->
                     </ion-list>
 <!--
                     <ion-infinite-scroll ng-if="moreDataCanBeLoaded()" icon="ion-loading-c" on-infinite="loadMoreData()" distance="1%">
