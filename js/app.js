@@ -79,6 +79,7 @@ function fileOperationServiceFunc($http, ArchiveListServ) {
 		}).success(function() {
 			ArchiveListServ.search();
 		}).error(function(data, status, headers, config) {
+            ArchiveListServ.search();
             alert(data.errorInfo);
 		});
 	};
@@ -95,6 +96,7 @@ function fileOperationServiceFunc($http, ArchiveListServ) {
 		}).success(function() {
 			ArchiveListServ.search();
 		}).error(function(data, status, headers, config) {
+            ArchiveListServ.search();
             //alert(data.errorInfo);
 		});
 	};
@@ -103,6 +105,7 @@ function fileOperationServiceFunc($http, ArchiveListServ) {
         $http.get(`${server}/artifactD/${name}`).success(function() {
 			ArchiveListServ.search();
 		}).error(function() {
+            ArchiveListServ.search();
 		});
 
 //        $http({
@@ -131,9 +134,41 @@ function fileOperationServiceFunc($http, ArchiveListServ) {
 		}).success(function() {
 			ArchiveListServ.search();
 		}).error(function(data, status, headers, config) {
+            ArchiveListServ.search();
             alert(data.errorInfo);
 		});
     };
+
+    this.goBackCollectionToUrl = function(goToUrl) {
+        var fd = new FormData();
+		$http.post(goToUrl, fd, {
+			transformRequest : angular.identity,
+			headers : {
+				'Content-Type' : undefined
+			}
+		}).success(function() {
+			ArchiveListServ.search();
+		}).error(function(data, status, headers, config) {
+            ArchiveListServ.search();
+            alert(data.errorInfo);
+		});
+    }
+
+    this.createCollectionToUrl = function(createCollectionUrl, collname) {
+		var fd = new FormData();
+        fd.append('Name', collname);
+		$http.post(createCollectionUrl, fd, {
+			transformRequest : angular.identity,
+			headers : {
+				'Content-Type' : undefined
+			}
+		}).success(function() {
+			ArchiveListServ.search();
+		}).error(function(data, status, headers, config) {
+            alert(data.errorInfo);
+            ArchiveListServ.search();
+		});
+    }
 
 }
 
@@ -160,6 +195,17 @@ function ListCtrlFunc($scope, fileOperationServ) {
     $scope.goToCollection = function(index) {
         var goToUrl = `${server}/setcurrentcollection`;
         fileOperationServ.goToCollectionToUrl(goToUrl, $scope.metadataList[index].name, $scope.metadataList[index].key);
+    };
+
+    $scope.goBackCollection = function() {
+        var goToUrl = `${server}/setbackcurrentcollection`;
+        fileOperationServ.goBackCollectionToUrl(goToUrl);
+    }
+
+    $scope.createCollection = function() {
+        var collname = $scope.collectionname;
+        var createCollectionUrl = `${server}/collection`;
+        fileOperationServ.createCollectionToUrl(createCollectionUrl, collname);
     };
 
 //    $scope.moredata = false;

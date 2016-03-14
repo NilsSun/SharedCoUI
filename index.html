@@ -23,10 +23,11 @@
             <div id="wrap">
                 <div id="status">
                    <div id="addCollection">
-                        <button class="button">
+                        <button class="button" style="float:left" ng-click="createCollection()">
                            <i class="icon ion-plus-round"></i>
                             <i class="icon ion-ios-folder-outline"></i>
                         </button>
+                        <input type="text" style="float:left" ng-model="collectionname">
                     </div>
                    <div id="addFile">
                         <button class="button" ng-click="uploadFile()">
@@ -40,25 +41,18 @@
                 <div id="fileList">
                     <ion-list>
                        <ion-item class="item-icon-right">
-                           <a href="https://localhost/collection/{{currentCollection.keys}}">{{currentCollection.names}}</a>
+                           {{currentCollection.names}}
+                           <button class="button" ng-click="goBackCollection()">up</button>
                        </ion-item>
                         <ion-item  ng-repeat="metadata in metadataList" class="item-icon-right">
-                            <button class="button" ng-click="goToCollection($index)">{{metadata.name}}/</button>
+                            <button class="button" ng-click="goToCollection($index)">{{metadata.name}}
+                            <label data-ng-show={{metadata.collectionFlag}}>/</label>
+                            </button>
                             <i class="icon ion-chevron-right icon-accessory">
                                 <button class="button" ng-click="deleteFile($index)">Delete</button>
                                 <button class="button" ng-click="updateFile($index)">Update</button>
                             </i>
                         </ion-item>
-<!--
-                       <ion-item><span>/root</span></ion-item>
-                        <ion-item  ng-repeat="metadata in metadataList" class="item-icon-right">
-                            <a href="https://localhost/artifact/{{metadata.name}}">{{metadata.name}}</a>
-                            <i class="icon ion-chevron-right icon-accessory">
-                                <button class="button" ng-click="deleteFile($index)">Delete</button>
-                                <button class="button" ng-click="updateFile($index)">Update</button>
-                            </i>
-                        </ion-item>
--->
                     </ion-list>
 <!--
                     <ion-infinite-scroll ng-if="moreDataCanBeLoaded()" icon="ion-loading-c" on-infinite="loadMoreData()" distance="1%">
